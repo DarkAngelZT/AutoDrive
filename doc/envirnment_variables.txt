@@ -1,0 +1,43 @@
+z+为前 vec(0,0,1)
+x+为右 vec(1,0,0)
+state:
+sensor: 
+顺时针方向12个测距仪的距离，[前,右前1,右前2，右，右后1,右后2，后，左后1，左后2，左，左前1，左前2]
+angle:
+车与道路方向轴之间的夹角
+trackPos:
+车离道路轴的距离（归一化）[-1,1]
+speed:
+速度，二维向量，省去了恒定为0的y轴，速度的方向为相对于道路轴方向的偏移.[x,z]
+angular speed:
+y轴角速度，描述车的转向状态
+reward:
+[0,1]之间的奖励，
+规则:
+基础分数 a:出界为-1分，在路中间一米以内为1分，离道路中轴越远越低
+速度校准 v:默认1，为防止ai选择停在原地，速度为零变成-1，速度低于40%最大速度会开始降低
+r = v*a
+done:
+本轮是否结束，0：未结束，1：已结束
+
+action:
+steer:
+方向控制. 0左转, 1直行，，2右转
+accelerator:
+动力控制. 0减速，1油门（缓慢到速度上限后匀速）
+
+client cmd:
+0: normal action
+1: reset environment, (cmd, isTraining)
+
+server cmd:
+10:regular training
+11:save nn
+12:terminate trainning session
+13: selective training (此状态下不记录数据,不训练,防止劣化已有形式)
+
+server msg:
+cmd,state, done
+
+client msg:
+cmd,action
